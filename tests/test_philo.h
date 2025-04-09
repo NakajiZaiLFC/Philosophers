@@ -1,21 +1,13 @@
-#ifndef PHILO_H
-#define PHILO_H
+#ifndef TEST_PHILO_H
+#define TEST_PHILO_H
 
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include <signal.h>
 #include <string.h>
-
-#ifdef DEBUG
-#define DEBUG_PRINT(fmt, ...) printf("[DEBUG] %s:%d: " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
-#define DEBUG_INIT(data) debug_init(data)
-#else
-#define DEBUG_PRINT(fmt, ...)
-#define DEBUG_INIT(data)
-#endif
+#include <stdbool.h>
 
 /* 哲学者の状態 */
 #define PHILO_THINKING 0
@@ -40,11 +32,6 @@
 #define MSG_THINK "is thinking"
 #define MSG_DIED "died"
 #define MSG_COMPLETE "All philosophers have eaten enough meals"
-
-/* リソースタイプ定義 */
-#define RESOURCE_MUTEX 1
-#define RESOURCE_MEMORY 2
-#define RESOURCE_THREAD 3
 
 typedef struct s_fork
 {
@@ -89,50 +76,6 @@ typedef struct s_data
 long long get_time(void);
 void ft_usleep(long long time);
 long long time_elapsed(long long start_time);
-int ft_atoi(const char *str);
-
-// init.c
-int init_data(t_data *data, int argc, char **argv);
-int init_philos(t_data *data);
-int init_forks(t_data *data);
-int init_mutex(t_data *data);
-
-#ifdef DEBUG
-void debug_init(t_data *data);
-#endif
-
-// philo.c
-int main(int argc, char **argv);
-void *philo_routine(void *arg);
-void *monitor_routine(void *arg);
-void monitor_philos(t_data *data);
-void print_status(t_philo *philo, char *status);
-int set_simulation_state(t_data *data, int state);
-int get_simulation_state(t_data *data);
-int check_all_ate(t_data *data);
-void handle_termination(t_data *data);
-void handle_meal_completion(t_data *data);
-void safe_exit(t_data *data, int exit_code);
-
-// cleanup.c
-int init_resource_inventory(void);
-int register_resource(void *ptr, int type, char *description);
-int unregister_resource(void *ptr);
-int register_mutex(pthread_mutex_t *mutex, char *description);
-int register_memory(void *ptr, char *description);
-int register_thread(pthread_t thread, char *description);
-void print_resource_inventory(void);
-int cleanup_single_mutex(pthread_mutex_t *mutex);
-int cleanup_multiple_mutexes(pthread_mutex_t *mutexes, int count);
-int cleanup_forks(t_fork *forks, int count);
-int cleanup_thread(pthread_t thread, int should_join);
-int cleanup_threads(pthread_t *threads, int count, int should_join);
-int cleanup_memory(void *ptr);
-int cleanup_all_resources_by_type(int type);
-int cleanup_all_resources(void);
-int emergency_cleanup(t_data *data);
-int free_resources(t_data *data);
-int verify_cleanup(t_data *data);
 
 // threading.c - スレッドセーフティ最適化用関数
 int is_state(t_data *data, int target_state);
@@ -144,5 +87,11 @@ int can_take_fork(t_philo *philo, int fork_index);
 int take_fork_safe(t_philo *philo, int fork_index);
 int is_time_to_die(t_philo *philo);
 long long time_since_last_meal(t_philo *philo);
+
+// テスト用スタブ関数
+void print_status(t_philo *philo, char *status);
+int set_simulation_state(t_data *data, int state);
+int cleanup_single_mutex(pthread_mutex_t *mutex);
+int init_resource_inventory(void);
 
 #endif
