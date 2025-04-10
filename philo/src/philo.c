@@ -544,56 +544,28 @@ int main(int argc, char **argv)
 	t_data data;
 
 	memset(&data, 0, sizeof(t_data));
-
-	// リソースインベントリを初期化
 	if (init_resource_inventory() != 0)
-	{
-		printf("Error: resource inventory initialization failed\n");
-		return (1);
-	}
-
+		return (printf("Error: resource inventory initialization failed\n"), 1);
 	if (argc != 5 && argc != 6)
-	{
-		printf("Error: wrong number of arguments\n");
-		return (1);
-	}
+		return (printf("Error: wrong number of arguments\n"), 1);
 	if (init_data(&data, argc, argv))
-	{
-		printf("Error: initialization failed\n");
-		return (1);
-	}
-
-	// 哲学者の構造体を初期化
+		return (printf("Error: initialization failed\n"), 1);
 	if (init_philos(&data) != 0)
-	{
-		printf("Error: philosopher initialization failed\n");
-		free_resources(&data);
-		return (1);
-	}
-
-	// 開始時刻の同期のためにlockを取得
+		return (printf("Error: philosopher initialization failed\n"), free_resources(&data), 1);
 	pthread_mutex_lock(&data.start_lock);
-
-	// 哲学者スレッドを作成
 	int i = 0;
 	while (i < data.num_philos)
 	{
 		data.philos[i].last_eat_time = get_time();
-		if (pthread_create(&data.philos[i].thread, NULL,
-						   philo_routine, &data.philos[i]) != 0)
+		if (pthread_create(&data.philos[i].thread, NULL, philo_routine, &data.philos[i]) != 0)
 		{
 			data.is_dead = 1;
 			set_simulation_state(&data, SIM_ERROR);
 			printf("Error: failed to create thread\n");
-			pthread_mutex_unlock(&data.start_lock);
-			handle_termination(&data);
-			free_resources(&data);
-			return (1);
+			return (pthread_mutex_unlock(&data.start_lock), handle_termination(&data), free_resources(&data), 1);
 		}
 		i++;
 	}
-
-	// モニタースレッドを作成
 	if (i == data.num_philos)
 	{
 		if (pthread_create(&data.monitor_thread, NULL, monitor_routine, &data) != 0)
@@ -601,24 +573,12 @@ int main(int argc, char **argv)
 			data.is_dead = 1;
 			set_simulation_state(&data, SIM_ERROR);
 			printf("Error: failed to create monitor thread\n");
-			pthread_mutex_unlock(&data.start_lock);
-			handle_termination(&data);
-			free_resources(&data);
-			return (1);
+			return (pthread_mutex_unlock(&data.start_lock), handle_termination(&data), free_resources(&data), 1);
 		}
 	}
-
-	// デバッグ情報を表示（デバッグモードの場合）
 	DEBUG_INIT(&data);
-
-	// すべてのスレッドの実行を一斉に開始
 	pthread_mutex_unlock(&data.start_lock);
-
-	// 終了処理を実行
 	handle_termination(&data);
-
-	// リソースを解放
 	free_resources(&data);
-
 	return (0);
 }

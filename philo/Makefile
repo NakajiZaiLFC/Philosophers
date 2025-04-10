@@ -1,8 +1,7 @@
 NAME = philo
 
 CC = cc
-# CFLAGS = -Wall -Wextra -Werror -pthread
-CFLAGS = -pthread
+CFLAGS = -Wall -Wextra -Werror -pthread
 # デバッグフラグ
 DEBUG_FLAGS = -g -DDEBUG
 # スレッドセーフティチェックフラグ
@@ -13,8 +12,19 @@ OBJ_DIR = obj
 # ソースディレクトリのパス
 SRC_DIR = src
 
-# ソースファイル（ディレクトリパスを含まない）
-SRCS = philo.c init.c utils.c cleanup.c threading.c
+# ソースファイルを修正：新しいファイルに関数を分割
+SRCS = philo.c \
+       philo_utils.c \
+       init.c \
+       utils.c \
+       cleanup.c \
+       cleanup_utils.c \
+       cleanup_extra.c \
+       resource_mgmt.c \
+       threading.c \
+       fork_utils.c \
+       fork_extra.c
+
 # ソースファイル（ディレクトリパスを含む）
 SRC_FILES = $(addprefix $(SRC_DIR)/, $(SRCS))
 # オブジェクトファイル

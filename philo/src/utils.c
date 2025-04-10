@@ -1,7 +1,19 @@
-#include "philo.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/07/01 12:00:00 by AI Assistan       #+#    #+#             */
+/*   Updated: 2025/04/11 02:22:42 by nassy            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../philo.h"
 
 /**
- * @brief 現在の時間をミリ秒単位で取得する
+ * @brief 現在の時間をミリ秒単位で取得する　
  *
  * @return long long 現在の時間（ミリ秒）
  */
@@ -12,6 +24,16 @@ long long get_time(void)
 	if (gettimeofday(&tv, NULL) != 0)
 		return (-1);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
+
+static void sleep_strategy(long long remaining)
+{
+	if (remaining > 50)
+		usleep(500);
+	else if (remaining > 10)
+		usleep(200);
+	else
+		usleep(50);
 }
 
 /**
@@ -32,18 +54,8 @@ void ft_usleep(long long time)
 		elapsed = get_time() - start;
 		if (elapsed >= time)
 			break;
-
-		// 残り時間を計算
 		remaining = time - elapsed;
-
-		// 待機戦略を最適化
-		// 「should live」テストケースのための特別対応
-		if (remaining > 50)
-			usleep(500); // 0.5msスリープ（長い残り時間）
-		else if (remaining > 10)
-			usleep(200); // 0.2msスリープ（中程度の残り時間）
-		else
-			usleep(50); // 0.05msスリープ（短い残り時間、より精密に）
+		sleep_strategy(remaining);
 	}
 }
 
