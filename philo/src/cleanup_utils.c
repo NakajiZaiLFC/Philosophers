@@ -6,7 +6,7 @@
 /*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 12:00:00 by AI Assistan       #+#    #+#             */
-/*   Updated: 2025/04/11 02:20:19 by nassy            ###   ########.fr       */
+/*   Updated: 2025/04/11 13:31:59 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ int cleanup_single_mutex(pthread_mutex_t *mutex)
 	result = pthread_mutex_destroy(mutex);
 	if (result == 0)
 		unregister_resource(mutex);
-	return (result == 0 ? 0 : 1);
+	if (result == 0)
+		return (0);
+	else
+		return (1);
 }
 
 int cleanup_multiple_mutexes(pthread_mutex_t *mutexes, int count)
@@ -46,7 +49,10 @@ int cleanup_multiple_mutexes(pthread_mutex_t *mutexes, int count)
 			success = 0;
 		i++;
 	}
-	return (success ? 0 : 1);
+	if (success)
+		return (0);
+	else
+		return (1);
 }
 
 int cleanup_forks(t_fork *forks, int count)
@@ -64,5 +70,8 @@ int cleanup_forks(t_fork *forks, int count)
 	}
 	free(forks);
 	unregister_resource(forks);
-	return (success ? 0 : 1);
+	if (success)
+		return (0);
+	else
+		return (1);
 }

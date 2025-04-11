@@ -6,13 +6,13 @@
 /*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 12:00:00 by AI Assistan       #+#    #+#             */
-/*   Updated: 2025/04/11 02:14:16 by nassy            ###   ########.fr       */
+/*   Updated: 2025/04/11 13:31:59 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-int cleanup_thread(pthread_t thread, int should_join)
+int	cleanup_thread(pthread_t thread, int should_join)
 {
 	int result;
 
@@ -20,10 +20,12 @@ int cleanup_thread(pthread_t thread, int should_join)
 	if (should_join)
 		result = pthread_join(thread, NULL);
 	unregister_resource((void *)&thread);
-	return (result == 0 ? 0 : 1);
+	if (result == 0)
+		return (0);
+	return (1);
 }
 
-int cleanup_threads(pthread_t *threads, int count, int should_join)
+int	cleanup_threads(pthread_t *threads, int count, int should_join)
 {
 	int i;
 	int success;
@@ -36,7 +38,9 @@ int cleanup_threads(pthread_t *threads, int count, int should_join)
 			success = 0;
 		i++;
 	}
-	return (success ? 0 : 1);
+	if (success)
+		return (0);
+	return (1);
 }
 
 int cleanup_memory(void *ptr)

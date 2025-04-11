@@ -6,7 +6,7 @@
 /*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 12:00:00 by AI Assistan       #+#    #+#             */
-/*   Updated: 2025/04/11 01:49:28 by nassy            ###   ########.fr       */
+/*   Updated: 2025/04/11 13:31:59 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,10 @@ int init_data(t_data *data, int argc, char **argv)
 		return (1);
 	data->is_dead = 0;
 	data->sim_state = SIM_RUNNING;
-	data->single_philo = (data->num_philos == 1) ? 1 : 0;
+	if (data->num_philos == 1)
+		data->single_philo = 1;
+	else
+		data->single_philo = 0;
 	data->start_time = get_time();
 	if (init_mutex(data) != 0)
 		return (1);
