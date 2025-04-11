@@ -1,28 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/01 12:00:00 by AI Assistan       #+#    #+#             */
-/*   Updated: 2025/04/11 13:31:59 by nassy            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../philo.h"
+#include "philo.h"
 
 static int validate_args(int argc, char **argv)
 {
 	int i;
 	int j;
 
-	DEBUG_PRINT("Validating arguments: argc=%d", argc);
-	if (argc != 5 && argc != 6)
-	{
-		DEBUG_PRINT("Error: wrong number of arguments");
-		return (1);
-	}
 	i = 1;
 	while (i < argc)
 	{
@@ -30,11 +12,7 @@ static int validate_args(int argc, char **argv)
 		while (argv[i][j])
 		{
 			if (argv[i][j] < '0' || argv[i][j] > '9')
-			{
-				DEBUG_PRINT("Error: invalid character in argument %d: %c",
-							i, argv[i][j]);
 				return (1);
-			}
 			j++;
 		}
 		i++;
@@ -53,65 +31,22 @@ static int parse_args(t_data *data, int argc, char **argv)
 	else
 		data->must_eat = -1;
 	if (data->num_philos <= 0 || data->time_to_die <= 0 || data->time_to_eat <= 0 || data->time_to_sleep <= 0 || (argc == 6 && data->must_eat <= 0))
-	{
-		DEBUG_PRINT("Error: invalid argument values");
 		return (1);
-	}
-	return (0);
-}
-
-int init_data(t_data *data, int argc, char **argv)
-{
-	DEBUG_PRINT("Initializing data structure");
-	if (init_resource_inventory() != 0)
-	{
-		DEBUG_PRINT("Error: リソースインベントリの初期化に失敗しました");
-		return (1);
-	}
-	if (validate_args(argc, argv))
-		return (1);
-	if (parse_args(data, argc, argv))
-		return (1);
-	data->is_dead = 0;
-	data->sim_state = SIM_RUNNING;
-	if (data->num_philos == 1)
-		data->single_philo = 1;
-	else
-		data->single_philo = 0;
-	data->start_time = get_time();
-	if (init_mutex(data) != 0)
-		return (1);
-	if (init_forks(data) != 0)
-	{
-		cleanup_single_mutex(&data->print);
-		cleanup_single_mutex(&data->death);
-		cleanup_single_mutex(&data->start_lock);
-		cleanup_single_mutex(&data->meal_lock);
-		return (1);
-	}
-	DEBUG_PRINT("Data structure initialized successfully");
 	return (0);
 }
 
 int init_mutex(t_data *data)
 {
-	DEBUG_PRINT("Initializing mutexes");
 	if (pthread_mutex_init(&data->print, NULL) != 0)
 		return (1);
-	register_mutex(&data->print, "print mutex");
 	if (pthread_mutex_init(&data->death, NULL) != 0)
-	{
-		cleanup_single_mutex(&data->print);
-		return (1);
-	}
-	register_mutex(&data->death, "death mutex");
+		return (cleanup_single_mutex(&data->print), 1);
 	if (pthread_mutex_init(&data->start_lock, NULL) != 0)
 	{
 		cleanup_single_mutex(&data->print);
 		cleanup_single_mutex(&data->death);
 		return (1);
 	}
-	register_mutex(&data->start_lock, "start_lock mutex");
 	if (pthread_mutex_init(&data->meal_lock, NULL) != 0)
 	{
 		cleanup_single_mutex(&data->print);
@@ -119,23 +54,16 @@ int init_mutex(t_data *data)
 		cleanup_single_mutex(&data->start_lock);
 		return (1);
 	}
-	register_mutex(&data->meal_lock, "meal_lock mutex");
 	return (0);
 }
 
 int init_forks(t_data *data)
 {
 	int i;
-	char fork_desc[32];
 
-	DEBUG_PRINT("Initializing forks");
 	data->forks = malloc(sizeof(t_fork) * data->num_philos);
 	if (!data->forks)
-	{
-		DEBUG_PRINT("Error: failed to allocate memory for forks");
 		return (1);
-	}
-	register_memory(data->forks, "forks array");
 	i = 0;
 	while (i < data->num_philos)
 	{
@@ -144,11 +72,8 @@ int init_forks(t_data *data)
 			while (--i >= 0)
 				cleanup_single_mutex(&data->forks[i].mutex);
 			free(data->forks);
-			unregister_resource(data->forks);
 			return (1);
 		}
-		snprintf(fork_desc, sizeof(fork_desc), "fork %d mutex", i);
-		register_mutex(&data->forks[i].mutex, fork_desc);
 		data->forks[i].state = FORK_AVAILABLE;
 		data->forks[i].owner_id = -1;
 		i++;
@@ -160,14 +85,9 @@ int init_philos(t_data *data)
 {
 	int i;
 
-	DEBUG_PRINT("Initializing philosophers");
 	data->philos = malloc(sizeof(t_philo) * data->num_philos);
 	if (!data->philos)
-	{
-		DEBUG_PRINT("Error: failed to allocate memory for philosophers");
 		return (1);
-	}
-	register_memory(data->philos, "philosophers array");
 	i = 0;
 	while (i < data->num_philos)
 	{
@@ -183,17 +103,31 @@ int init_philos(t_data *data)
 	return (0);
 }
 
-#ifdef DEBUG
-void debug_init(t_data *data)
-{
-	int i;
 
-	printf("=== 初期化デバッグ情報 ===\n");
-	printf("哲学者の数: %d\n", data->num_philos);
-	printf("死亡時間: %d\n", data->time_to_die);
-	printf("食事時間: %d\n", data->time_to_eat);
-	printf("睡眠時間: %d\n", data->time_to_sleep);
-	printf("必要食事回数: %d\n", data->must_eat);
-	printf("開始時間: %lld\n", data->start_time);
+int init_data(t_data *data, int argc, char **argv)
+{
+	if (validate_args(argc, argv))
+		return (1);
+	if (parse_args(data, argc, argv))
+		return (1);
+	data->is_dead = 0;
+	data->sim_state = SIM_RUNNING;
+	if (data->num_philos == 1)
+		data->single_philo = 1;
+	else
+		data->single_philo = 0;
+	
+	// start_timeはmain.cで設定するため、ここでは初期化しない
+
+	if (init_mutex(data) != 0)
+		return (1);
+	if (init_forks(data) != 0)
+	{
+		cleanup_single_mutex(&data->print);
+		cleanup_single_mutex(&data->death);
+		cleanup_single_mutex(&data->start_lock);
+		cleanup_single_mutex(&data->meal_lock);
+		return (1);
+	}
+	return (0);
 }
-#endif

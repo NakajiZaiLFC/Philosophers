@@ -1,16 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   fork_utils.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/01 12:00:00 by AI Assistan       #+#    #+#             */
-/*   Updated: 2025/04/11 13:31:59 by nassy            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../philo.h"
+#include "philo.h"
 
 int can_take_fork(t_philo *philo, int fork_index)
 {
@@ -25,7 +13,7 @@ int can_take_fork(t_philo *philo, int fork_index)
 int take_fork_safe(t_philo *philo, int fork_index)
 {
 	pthread_mutex_lock(&philo->data->forks[fork_index].mutex);
-	if (philo->data->forks[fork_index].state == FORK_AVAILABLE && !is_dead(philo->data))
+	if (philo->data->forks[fork_index].state == FORK_AVAILABLE)
 	{
 		philo->data->forks[fork_index].state = FORK_IN_USE;
 		philo->data->forks[fork_index].owner_id = philo->id;
@@ -79,6 +67,7 @@ int check_and_take_both_forks(t_philo *philo)
 		return (0);
 	if (!take_fork_safe(philo, second_fork))
 	{
+		pthread_mutex_lock(&philo->data->forks[first_fork].mutex);
 		philo->data->forks[first_fork].state = FORK_AVAILABLE;
 		philo->data->forks[first_fork].owner_id = -1;
 		pthread_mutex_unlock(&philo->data->forks[first_fork].mutex);

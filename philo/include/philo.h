@@ -6,7 +6,7 @@
 /*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 12:00:00 by AI Assistan       #+#    #+#             */
-/*   Updated: 2025/04/11 13:31:59 by nassy            ###   ########.fr       */
+/*   Updated: 2025/04/12 01:57:02 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@
 #define RESOURCE_MEMORY 2
 #define RESOURCE_THREAD 3
 
+/* error message */
+#define ERROR_RESOURCE_INIT "Error: resource inventory initialization failed"
+#define ERROR_WRONG_ARG "Error: wrong number of arguments"
+#define ERROR_INIT "Error: initialization failed"
+#define ERROR_PHILO_INIT "Error: philosopher initialization failed"
+
 typedef struct s_fork
 {
 	pthread_mutex_t mutex;
@@ -98,79 +104,41 @@ typedef struct s_data
 	t_philo *philos;
 } t_data;
 
-/* utils.c */
-long long get_time(void);
-void ft_usleep(long long time);
-long long time_elapsed(long long start_time);
-int ft_atoi(const char *str);
-
-/* init.c */
-int init_data(t_data *data, int argc, char **argv);
-int init_philos(t_data *data);
-int init_forks(t_data *data);
-int init_mutex(t_data *data);
-
-// #ifdef DEBUG
-// void debug_init(t_data *data);
-// #endif
-
-/* philo.c */
-int main(int argc, char **argv);
-void *philo_routine(void *arg);
-void *monitor_routine(void *arg);
-void monitor_philos(t_data *data);
-void print_status(t_philo *philo, char *status);
-
-/* philo_utils.c */
-int set_simulation_state(t_data *data, int state);
-int get_simulation_state(t_data *data);
-int check_all_ate(t_data *data);
-void handle_termination(t_data *data);
-void handle_meal_completion(t_data *data);
-
-/* cleanup.c */
-int init_resource_inventory(void);
-int register_resource(void *ptr, int type, char *description);
-int unregister_resource(void *ptr);
-int register_mutex(pthread_mutex_t *mutex, char *description);
-int register_memory(void *ptr, char *description);
-
-/* cleanup_utils.c */
-int register_thread(pthread_t thread, char *description);
-void print_resource_inventory(void);
-int cleanup_single_mutex(pthread_mutex_t *mutex);
-int cleanup_multiple_mutexes(pthread_mutex_t *mutexes, int count);
-int cleanup_forks(t_fork *forks, int count);
-
-/* cleanup_extra.c */
-int cleanup_thread(pthread_t thread, int should_join);
-int cleanup_threads(pthread_t *threads, int count, int should_join);
-int cleanup_memory(void *ptr);
-int cleanup_all_resources_by_type(int type);
-int cleanup_all_resources(void);
-
-/* resource_mgmt.c */
-int emergency_cleanup(t_data *data);
+/* Function prototypes */
 int free_resources(t_data *data);
-int verify_cleanup(t_data *data);
-void safe_exit(t_data *data, int exit_code);
-
-/* threading.c */
+int cleanup_single_mutex(pthread_mutex_t *mutex);
+long long get_time(void);
+int ft_atoi(const char *str);
+long long time_elapsed(long long start_time);
+void ft_usleep(long long time);
 int is_state(t_data *data, int target_state);
+void release_both_forks(t_philo *philo);
 int is_dead(t_data *data);
-int update_meal_count(t_philo *philo);
-int bidirectional_lock(pthread_mutex_t *m1, pthread_mutex_t *m2);
-void bidirectional_unlock(pthread_mutex_t *m1, pthread_mutex_t *m2);
-
-/* fork_utils.c */
+void eat(t_philo *philo);
+int check_and_take_both_forks_safe(t_philo *philo);
+int check_all_ate(t_data *data);
+void handle_meal_completion(t_data *data);
+void philo_think(t_philo *philo);
+void adjust_think_time(t_philo *philo);
 int can_take_fork(t_philo *philo, int fork_index);
 int take_fork_safe(t_philo *philo, int fork_index);
 int is_time_to_die(t_philo *philo);
 long long time_since_last_meal(t_philo *philo);
 int check_and_take_both_forks(t_philo *philo);
-
-/* fork_extra.c */
-int check_and_take_both_forks_safe(t_philo *philo);
-void release_both_forks(t_philo *philo);
-
+void handle_termination(t_data *data);
+int init_data(t_data *data, int argc, char **argv);
+int init_mutex(t_data *data);
+int init_forks(t_data *data);
+int init_philos(t_data *data);
+void *monitor_routine(void *arg);
+int handle_thread_creation_error(t_data *data, char *err_msg);
+int get_simulation_state(t_data *data);
+void *philo_routine(void *arg);
+void sleep_and_think(t_philo *philo);
+int try_get_forks(t_philo *philo);
+void print_status(t_philo *philo, char *status);
+int check_death(t_philo *philo);
+int set_simulation_state(t_data *data, int state);
+void philo_sleep(t_philo *philo);
+int cleanup_forks(t_fork *forks, int count);
 #endif
