@@ -6,19 +6,17 @@ CFLAGS = -Wall -Wextra -Werror -pthread -Iinclude
 SRC_DIR = src
 OBJ_DIR = obj
 
-SRC = main.c \
-	init.c \
-	cleanup.c \
-	philo.c \
-	utils.c \
-	sleep.c \
-	think.c \
-	handle.c \
-	monitor.c \
-	condition.c \
-	fork_utils.c \
-	status.c \
-	eat.c
+SRC	=	actions.c \
+		cleanup.c \
+		forks.c \
+		init.c \
+		main.c \
+		monitor_routine.c \
+		monitoring.c \
+		routines.c \
+		simulation.c \
+		utils.c \
+		validation.c
 	
 
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC))

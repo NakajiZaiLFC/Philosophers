@@ -1,8 +1,39 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cleanup.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: snakajim <snakajim@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/12 15:25:09 by snakajim          #+#    #+#             */
+/*   Updated: 2025/04/12 15:26:27 by snakajim         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-int cleanup_single_mutex(pthread_mutex_t *mutex)
+int	free_resources(t_data *data)
 {
-	int result;
+	if (data->philos)
+	{
+		free(data->philos);
+		data->philos = NULL;
+	}
+	if (data->forks)
+	{
+		cleanup_forks(data->forks, data->num_philos);
+		data->forks = NULL;
+	}
+	cleanup_single_mutex(&data->print);
+	cleanup_single_mutex(&data->death);
+	cleanup_single_mutex(&data->start_lock);
+	cleanup_single_mutex(&data->meal_lock);
+	return (0);
+}
+
+int	cleanup_single_mutex(pthread_mutex_t *mutex)
+{
+	int	result;
 
 	result = pthread_mutex_destroy(mutex);
 	if (result == 0)
@@ -11,10 +42,10 @@ int cleanup_single_mutex(pthread_mutex_t *mutex)
 		return (1);
 }
 
-int cleanup_forks(t_fork *forks, int count)
+int	cleanup_forks(t_fork *forks, int count)
 {
-	int i;
-	int success;
+	int	i;
+	int	success;
 
 	i = 0;
 	success = 1;
@@ -29,25 +60,4 @@ int cleanup_forks(t_fork *forks, int count)
 		return (0);
 	else
 		return (1);
-}
-
-int free_resources(t_data *data)
-{
-	if (data->philos)
-	{
-		free(data->philos);
-		data->philos = NULL;
-	}
-	if (data->forks)
-	{
-		cleanup_forks(data->forks, data->num_philos);
-		data->forks = NULL;
-	}
-	
-	cleanup_single_mutex(&data->print);
-	cleanup_single_mutex(&data->death);
-	cleanup_single_mutex(&data->start_lock);
-	cleanup_single_mutex(&data->meal_lock);
-
-	return (0);
 }
