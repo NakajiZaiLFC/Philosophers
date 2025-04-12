@@ -2,11 +2,15 @@
 
 void eat(t_philo *philo)
 {
+	long long current_time;
+
 	if (!check_and_take_both_forks_safe(philo))
 		return;
+	pthread_mutex_lock(&philo->data->death);
 	philo->state = PHILO_EATING;
+	pthread_mutex_unlock(&philo->data->death);
 	print_status(philo, MSG_EAT);
-	long long current_time = get_time();
+	current_time = get_time();
 	pthread_mutex_lock(&philo->data->meal_lock);
 	philo->last_eat_time = current_time;
 	pthread_mutex_unlock(&philo->data->meal_lock);
