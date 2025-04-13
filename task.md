@@ -1,11 +1,31 @@
-Run this md file without head -n until we endorse it or the philosopher dies.
-If it dies when you run the should live test case, modify the code so that it survives.
-There is a flaw in the algorithm when the number of philosophers is n%2 == 1, and philosophers who should have priority to fork do not fork. Improved so that once a philosopher is in THINK, he/she has the highest priority to get a meal.
+## Key Issues Identified
 
-- should live
-    - `./philo 5 800 200 200`
-    - `./philo 5 800 200 200 7`
-    - `./philo 4 410 200 200`
-- should die
-    - `./philo 1 800 200 200`
-    - `./philo 4 310 200 100`
+1. **Race Conditions**: Multiple threads are accessing shared variables without proper synchronization
+2. **Inconsistent Mutex Usage**: Different threads use different mutex locks to access the same data
+3. **Death Flag Access Problems**: The monitor thread and philosopher threads are racing when checking/setting the death status
+
+## Areas to Focus On
+
+1. **Priority System for Odd Numbers of Philosophers**: When n%2 == 1, philosophers aren't getting proper fork priority
+2. **Even-numbered Philosophers**: Need to think until their meal is ready at process start
+3. **Mutex Protection**: All shared data needs consistent mutex protection
+
+## Recommended Improvements
+
+1. **Enhanced Priority System**:
+   - Once a philosopher enters THINK state, give them highest priority to eat next
+   - Implement a queue or priority flag for each philosopher
+
+2. **Initial State Logic**:
+   - Even-numbered philosophers should think at start until ready to eat
+   - Odd-numbered philosophers with meal priority should eat immediately
+   - No philosopher should sleep without eating first
+
+3. **Fixed Synchronization**:
+   - Use a consistent mutex for death flag access
+   - Protect all shared state with appropriate mutexes
+   - Fix the race condition in the monitor_routine and is_dead functions
+
+4. **Fork Acquisition Strategy**:
+   - Improve check_and_take_both_forks to respect the priority system
+   - Ensure philosophers with priority can preempt others waiting for forks

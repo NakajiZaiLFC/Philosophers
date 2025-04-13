@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor_routine.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: snakajim <snakajim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:55:58 by snakajim          #+#    #+#             */
-/*   Updated: 2025/04/12 15:45:28 by snakajim         ###   ########.fr       */
+/*   Updated: 2025/04/14 08:43:52 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	*handle_single_philosopher(t_data *data)
 {
-	ft_usleep(data->time_to_die + 10);
+	ft_usleep(data->time_to_die + 1);
 	pthread_mutex_lock(&data->death);
 	data->is_dead = 1;
 	data->philos[0].state = PHILO_DEAD;
