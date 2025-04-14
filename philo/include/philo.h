@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: snakajim <snakajim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 12:00:00 by AI Assistan       #+#    #+#             */
-/*   Updated: 2025/04/12 15:07:54 by snakajim         ###   ########.fr       */
+/*   Updated: 2025/04/14 10:08:09 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void				ft_usleep(long long time);
 int					is_state(t_data *data, int target_state);
 void				release_both_forks(t_philo *philo);
 int					is_dead(t_data *data);
-void				eat(t_philo *philo);
+int					eat(t_philo *philo);
 int					check_and_take_both_forks_safe(t_philo *philo);
 int					check_all_ate(t_data *data);
 void				handle_meal_completion(t_data *data);

@@ -6,18 +6,21 @@
 /*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 15:30:13 by snakajim          #+#    #+#             */
-/*   Updated: 2025/04/14 09:10:24 by nassy            ###   ########.fr       */
+/*   Updated: 2025/04/14 11:26:56 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	eat(t_philo *philo)
+int	eat(t_philo *philo)
 {
 	long long	current_time;
 
 	if (!check_and_take_both_forks_safe(philo))
-		return ;
+	{
+		philo_think(philo);
+		return (0);
+	}
 	pthread_mutex_lock(&philo->data->death);
 	philo->state = PHILO_EATING;
 	pthread_mutex_unlock(&philo->data->death);
@@ -31,6 +34,7 @@ void	eat(t_philo *philo)
 	philo->eat_count++;
 	pthread_mutex_unlock(&philo->data->meal_lock);
 	release_both_forks(philo);
+	return (1);
 }
 
 void	philo_sleep(t_philo *philo)
@@ -82,6 +86,5 @@ void	sleep_and_think(t_philo *philo)
 	if (check_death(philo))
 		return ;
 	philo_think(philo);
-	if (philo->id % 2 == 0)
-		try_get_forks(philo);
+	try_get_forks(philo);
 }

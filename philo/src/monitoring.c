@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitoring.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: snakajim <snakajim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 15:32:34 by snakajim          #+#    #+#             */
-/*   Updated: 2025/04/12 15:36:24 by snakajim         ###   ########.fr       */
+/*   Updated: 2025/04/14 10:42:29 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	is_time_to_die(t_philo *philo)
 	long long	time_since_meal;
 
 	time_since_meal = time_since_last_meal(philo);
-	return (time_since_meal > philo->data->time_to_die);
+	return (time_since_meal >= philo->data->time_to_die);
 }
 
 long long	time_since_last_meal(t_philo *philo)
