@@ -6,7 +6,7 @@
 /*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 12:00:00 by AI Assistan       #+#    #+#             */
-/*   Updated: 2025/04/14 10:08:09 by nassy            ###   ########.fr       */
+/*   Updated: 2025/04/14 12:34:27 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int					ft_atoi(const char *str);
 long long			time_elapsed(long long start_time);
 void				ft_usleep(long long time);
 int					is_state(t_data *data, int target_state);
-void				release_both_forks(t_philo *philo);
+void				release_both_forks(t_philo *philo, int first_fork, int second_fork);
 int					is_dead(t_data *data);
 int					eat(t_philo *philo);
 int					check_and_take_both_forks_safe(t_philo *philo);
@@ -109,7 +109,6 @@ int					can_take_fork(t_philo *philo, int fork_index);
 int					take_fork_safe(t_philo *philo, int fork_index);
 int					is_time_to_die(t_philo *philo);
 long long			time_since_last_meal(t_philo *philo);
-int					check_and_take_both_forks(t_philo *philo);
 void				handle_termination(t_data *data);
 int					init_data(t_data *data, int argc, char **argv);
 int					init_mutex(t_data *data);

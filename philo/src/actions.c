@@ -6,7 +6,7 @@
 /*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 15:30:13 by snakajim          #+#    #+#             */
-/*   Updated: 2025/04/14 11:26:56 by nassy            ###   ########.fr       */
+/*   Updated: 2025/04/14 12:16:54 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	eat(t_philo *philo)
 	pthread_mutex_lock(&philo->data->meal_lock);
 	philo->eat_count++;
 	pthread_mutex_unlock(&philo->data->meal_lock);
-	release_both_forks(philo);
+	release_both_forks(philo, 0, 0);
 	return (1);
 }
 
