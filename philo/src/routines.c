@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routines.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: snakajim <snakajim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 15:39:10 by snakajim          #+#    #+#             */
-/*   Updated: 2025/04/12 15:40:03 by snakajim         ###   ########.fr       */
+/*   Updated: 2025/04/14 09:09:37 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	*philo_routine(void *arg)
 	if (philo->id % 2 == 0)
 	{
 		ft_usleep(philo->data->time_to_eat / 2);
+		philo_think(philo);
+		try_get_forks(philo);
 	}
 	while (get_simulation_state(philo->data) == SIM_RUNNING)
 	{

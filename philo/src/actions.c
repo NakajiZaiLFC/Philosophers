@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: snakajim <snakajim@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nassy <nassy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 15:30:13 by snakajim          #+#    #+#             */
-/*   Updated: 2025/04/12 15:32:20 by snakajim         ###   ########.fr       */
+/*   Updated: 2025/04/14 09:10:24 by nassy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,6 @@ void	sleep_and_think(t_philo *philo)
 	if (check_death(philo))
 		return ;
 	philo_think(philo);
-	try_get_forks(philo);
+	if (philo->id % 2 == 0)
+		try_get_forks(philo);
 }

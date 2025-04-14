@@ -1,0 +1,23 @@
+0 1 has taken a fork
+0 1 has taken a fork
+0 1 is eating
+0 3 has taken a fork
+0 3 has taken a fork
+0 3 is eating
+100 2 is thinking
+100 4 is thinking
+200 3 is sleeping
+200 1 is sleeping
+201 2 has taken a fork
+201 2 has taken a fork
+201 2 is eating
+201 4 has taken a fork
+201 4 has taken a fork
+201 4 is eating
+400 3 is thinking
+400 1 is thinking
+401 4 is sleeping
+401 2 is sleeping
+402 All philosophers have eaten enough
+601 2 is thinking
+601 4 is thinking
